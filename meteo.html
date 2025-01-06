@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Météo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+        }
+
+        header {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            margin: 0;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 200;
+            margin: 10px 0 0;
+            animation: fadeIn 2.5s ease-in-out;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        .tool {
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tool:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        input[type="text"] {
+            width: calc(100% - 30px);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #f5f5f5;
+            background: #1a1a1a;
+            border: 1px solid #555;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: #1a1a1a;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #e0e0e0;
+        }
+
+        .weather-info {
+            margin-top: 20px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .weather-info h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .weather-info p {
+            font-size: 1.2rem;
+            margin: 10px 0 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            background-color: #1a1a1a;
+            color: #777;
+        }
+
+        footer a {
+            color: #f5f5f5;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Application Météo</h1>
+        <p>Entrez une ville pour obtenir la météo actuelle.</p>
+    </header>
+
+    <div class="container">
+        <div class="tool">
+            <h2>Rechercher la météo</h2>
+            <input type="text" id="city" placeholder="Entrez une ville...">
+            <button onclick="getWeather()">Obtenir la météo</button>
+
+            <div class="weather-info" id="weather-info" style="display: none;">
+                <h3>Météo pour <span id="city-name"></span></h3>
+                <p id="weather-description"></p>
+                <p id="temperature"></p>
+                <p id="humidity"></p>
+                <p id="wind-speed"></p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Zeldrom. Conçu par <a href="https://www.youtube.com/@zeldrom_" target="_blank">Zeldrom</a>.</p>
+    </footer>
+
+    <script>
+        const apiKey = 'c494cf1248604f1e6224d834927e0314'; // Remplacez par votre clé API OpenWeatherMap
+
+        function getWeather() {
+            const city = document.getElementById('city').value;
+            if (!city) {
+                alert('Veuillez entrer une ville.');
+                return;
+            }
+
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.cod === 200) {
+                        document.getElementById('city-name').textContent = data.name;
+                        document.getElementById('weather-description').textContent = data.weather[0].description;
+                        document.getElementById('temperature').textContent = `Température: ${data.main.temp}°C`;
+                        document.getElementById('humidity').textContent = `Humidité: ${data.main.humidity}%`;
+                        document.getElementById('wind-speed').textContent = `Vitesse du vent: ${data.wind.speed} m/s`;
+                        document.getElementById('weather-info').style.display = 'block';
+                    } else {
+                        alert('Ville non trouvée. Veuillez vérifier le nom.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur s\'est produite. Veuillez réessayer.');
+                });
+        }
+    </script>
+</body>
+</html>
